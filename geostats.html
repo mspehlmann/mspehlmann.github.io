@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Volumes/ExtremeSSD/munDOX/professional/css/geostats.css" type="text/css">
+    <title>Michael Spehlmann</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>Michael Spehlmann</h1>
+            <nav>
+                <ul class="nav-list">
+                    <li><a href="experience.html">Experience</a></li>
+                    <li><a href="geostats.html">Geostats</a></li>
+                    <li><a href="index.html">About Me</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <section id="geostats" class="section">
+            <div class="container">
+                <h2>Mapping</h2>
+                <div class="work-content">
+                    <img src="d1Process.png" alt="1D process" class="work-img">
+                    <p>Machine learning algorithms, in conjunction with remote sensing, are increasingly being used to generate geological maps.
+                        Often, these are choropleth maps that sacrifice geological accuracy for what I view as the convenience of not needing to 
+                        faithfully represent the geology through domaining. Currently, I am working on adapting process convolutions for implicit
+                        domaining applications. This involves determining an appropriate threshold to separate positive and negative classes. 
+                        For example, in the one-dimensional example above, what is an appropriate cutoff?
+                    </p>
+                </div>
+            </div>
+
+            <div class="container">
+                <h2>Uncertainty Estimation</h2>
+                <div class="work-content">
+                    <img src="oks_plot.png" alt="kriging rasters" class="work-img">
+                    <p>As any mining engineer knows, resource estimates can vary significantly between geologists.
+                        With the advent of implicit domain modeling, many different domains can be estimated. Kriging variance 
+                        can be used to compare the uncertainty of these estimates. In my spatial statistics course, I became interested in
+                        examining how kriging variance is affected by domaining. I explored how different domains influence resource 
+                        estimations and the associated uncertainties. This work highlighted some limitations of relying too heavily on implicit techniques. 
+                        Often, explicit domains yield better kriging estimates with lower kriging variances.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="footer">
+        <div class="container">
+            <p>&copy; 2024 Michael Spehlmann</p>
+        </div>
+    </footer>
+</body>
+</html>
