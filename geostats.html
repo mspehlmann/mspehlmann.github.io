@@ -23,51 +23,55 @@
 
     <main class="main">
         <section id="geostats" class="section">
-
+            
             <div class="container">
                 <h2>Spatial Process Convolutions</h2>
                 <div class="work-content">
-                    <img src="oks_plot.png" alt="kriging rasters" class="work-img">
-                    <p>Under the instruction of my advisor I am currently working on how to use process
-                        convolutions to model a spatial trend.  Kernal weights, &lambda;, and &mu;, can be 
-                        found from the model statment below.  Shown above is the 1d fit of this convolution 
-                        using this model statement to parameterize the process convolution.  I am currently 
-                        working adapting this model to fit in 2 dimensions.
+                    <figure>
+                        <img src="/Volumes/ExtremeSSD/munDOX/professional/gitWorkingDir/oneDProcessConvo.png" alt="Kriging rasters" class="work-img">
+                        <figcaption>The 1D fit of the spatial process convolution model.</figcaption>
+                    </figure>
+                    <p>Under the instruction of my advisor, I am currently working on using process
+                        convolutions to model a spatial trend. The kernel weights, &lambda; and &mu;, can be 
+                        found from the model statement below. The 1D fit of this convolution is shown above,
+                        using the model statement to parameterize the process convolution. I am currently 
+                        working on adapting this model to fit in two dimensions.
                     </p>
-                    <h4>JAGs Model Statement</h4>
+                    <h3>JAGS Model Statement</h3>
                     <pre><code>
-                        mod_str = "model {
-
-                            #likelihood
-                            for (i in 1:N) {
-                              sum_K_W[i] = sum(K[i, 1:M] * W[1:M])
-                              Y[i] ~ dnorm(mu + sum_K_W[i], tau_eps)
-                            }
-                            
-                            # Priors
-                            mu ~ dnorm(0, 0.001)
-                            tau_eps ~ dgamma(0.01, 0.01)
-                            tau_w ~ dgamma(0.01, 0.01)
-                            lambda ~ dunif(0, 10)
-                            
-                            #calcs
-                            sigma_w = 1 / sqrt(tau_w)
-                            sigma_eps = 1 / sqrt(tau_eps)
-                          
-                            #weights
-                            for (j in 1:M) {
-                              W[j] ~ dnorm(0, tau_w)
-                            }
-                            
-                            #kernal matrix
-                            for (i in 1:N) {
-                              for (j in 1:M) {
-                                K[i, j] = exp(-0.5 * ((s[i] - u[j]) / lambda)**2)
-                              }
-                            }
-                          }"
+            mod_str = "model {
+            
+                # Likelihood
+                for (i in 1:N) {
+                    sum_K_W[i] = sum(K[i, 1:M] * W[1:M])
+                    Y[i] ~ dnorm(mu + sum_K_W[i], tau_eps)
+                }
+                
+                # Priors
+                mu ~ dnorm(0, 0.001)
+                tau_eps ~ dgamma(0.01, 0.01)
+                tau_w ~ dgamma(0.01, 0.01)
+                lambda ~ dunif(0, 10)
+                
+                # Calculations
+                sigma_w = 1 / sqrt(tau_w)
+                sigma_eps = 1 / sqrt(tau_eps)
+                
+                # Weights
+                for (j in 1:M) {
+                    W[j] ~ dnorm(0, tau_w)
+                }
+                
+                # Kernel matrix
+                for (i in 1:N) {
+                    for (j in 1:M) {
+                        K[i, j] = exp(-0.5 * ((s[i] - u[j]) / lambda)**2)
+                    }
+                }
+            }"
                     </code></pre>
                 </div>
+            </div>
 
             <div class="container">
                 <h2>Mapping</h2>
