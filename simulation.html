@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spatial Process Web App</title>
+  <link rel="stylesheet" href="simulation.css" type="text/css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.5.0/math.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <h1>Spatial Process Web App</h1>
+  <form id="inputForm">
+    <label for="n_points_X">Points (X):</label>
+    <input type="number" id="n_points_X" value="50" required>
+    <label for="n_points_Y">Points (Y):</label>
+    <input type="number" id="n_points_Y" value="50" required>
+    <label for="random_points">Random Points:</label>
+    <input type="number" id="random_points" value="10" required>
+    <label for="categories">Categories:</label>
+    <input type="number" id="categories" value="3" required>
+    <button type="submit">Generate</button>
+  </form>
+  <canvas id="canvas" width="500" height="500"></canvas>
+  <script src="app.js"></script>
+</body>
+</html>
