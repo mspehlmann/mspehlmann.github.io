@@ -14,6 +14,7 @@
 }
 
 .nav-list {
+    background-color: #2fc5f0;
     display: flex;
     justify-content: center;
     list-style: none;

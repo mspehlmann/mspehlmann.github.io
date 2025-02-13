@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function simulateSpatialProcess() {
-        const nPointsX = 30, nPointsY = 30;
+        const nPointsX = 20, nPointsY = 20;
         const x = Array.from({ length: nPointsX }, (_, i) => i);
         const y = Array.from({ length: nPointsY }, (_, i) => i);
         const locations = x.flatMap(xi => y.map(yi => [xi, yi]));
