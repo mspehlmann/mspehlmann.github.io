@@ -17,11 +17,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const n = locations.length;
         const kernel = Array.from({ length: n }, () => Array(n).fill(0));
         for (let i = 0; i < n; i++) {
-            for (let j = 0; j < n; j++) {
+            for (let j = 0; j <= i; j++) {
                 const dx = locations[i][0] - locations[j][0];
                 const dy = locations[i][1] - locations[j][1];
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 kernel[i][j] = variance * Math.exp(-0.5 * Math.pow(distance / range, 2));
+                if (i !== j) kernel[j][i] = kernel[i][j];
             }
         }
         return kernel;
@@ -33,10 +34,12 @@ document.addEventListener("DOMContentLoaded", function () {
         for (let i = 0; i < n; i++) {
             for (let j = 0; j <= i; j++) {
                 let sum = 0;
-                for (let k = 0; k < j; k++) {
-                    sum += L[i][k] * L[j][k];
+                for (let k = 0; k < j; k++) sum += L[i][k] * L[j][k];
+                if (i === j) {
+                    L[i][j] = Math.sqrt(matrix[i][i] - sum);
+                } else {
+                    L[i][j] = (matrix[i][j] - sum) / L[j][j];
                 }
-                L[i][j] = i === j ? Math.sqrt(matrix[i][i] - sum) : (matrix[i][j] - sum) / L[j][j];
             }
         }
         return L;
@@ -47,46 +50,57 @@ document.addEventListener("DOMContentLoaded", function () {
         return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
     }
 
-    function multivariateNormal(mean, cov, size) {
+    function multivariateNormal(mean, cov) {
         const n = mean.length;
-        const chol = choleskyDecomposition(cov);
-        return Array.from({ length: size }, () => {
+        const L = choleskyDecomposition(cov);
+        return Array.from({ length: n }, (_, i) => {
             const z = Array.from({ length: n }, randn);
-            return chol.map(row => row.reduce((sum, val, j) => sum + val * z[j], 0));
+            return L[i].reduce((sum, val, j) => sum + val * z[j], 0);
         });
     }
 
     function simulateSpatialProcess() {
-        const nPointsX = 50, nPointsY = 50;
-        const x = Array.from({ length: nPointsX }, (_, i) => 10 * i / (nPointsX - 1));
-        const y = Array.from({ length: nPointsY }, (_, i) => 10 * i / (nPointsY - 1));
+        const nPointsX = 30, nPointsY = 30;
+        const x = Array.from({ length: nPointsX }, (_, i) => i);
+        const y = Array.from({ length: nPointsY }, (_, i) => i);
         const locations = x.flatMap(xi => y.map(yi => [xi, yi]));
 
         const rangeCat = parseFloat(rangeSlider.value);
         const varianceCat = parseFloat(varianceSlider.value);
         const k = parseInt(categoriesSlider.value, 10);
 
+        console.log("Simulating with range:", rangeCat, "variance:", varianceCat, "categories:", k);
+
         const covCat = gaussianKernel(locations, rangeCat, varianceCat);
-        const gpSamplesCat = multivariateNormal(new Array(locations.length).fill(0), covCat, k);
-        const gpStacked = gpSamplesCat[0].map((_, i) => gpSamplesCat.map(row => row[i]));
-        const categories = gpStacked.map(row => row.indexOf(Math.max(...row)));
 
-        const trace = {
-            x: locations.map(loc => loc[0]),
-            y: locations.map(loc => loc[1]),
-            z: categories,
-            type: 'heatmap',
-            colorscale: 'Viridis'
-        };
+        try {
+            const gpSamplesCat = Array.from({ length: k }, () => multivariateNormal(new Array(locations.length).fill(0), covCat));
+            const gpStacked = gpSamplesCat[0].map((_, i) => gpSamplesCat.map(row => row[i]));
+            const categories = gpStacked.map(row => row.indexOf(Math.max(...row)));
 
-        const layout = {
-            title: 'Categorical Process',
-            xaxis: { title: 'X' },
-            yaxis: { title: 'Y' }
-        };
+            const trace = {
+                x: locations.map(loc => loc[0]),
+                y: locations.map(loc => loc[1]),
+                z: categories,
+                type: 'heatmap',
+                colorscale: 'Viridis'
+            };
 
-        Plotly.newPlot('plot', [trace], layout);
+            const layout = {
+                title: 'Categorical Process Simulation',
+                xaxis: { title: 'X' },
+                yaxis: { title: 'Y' }
+            };
+
+            setTimeout(() => {
+                Plotly.newPlot('plot', [trace], layout);
+            }, 100);
+        } catch (error) {
+            console.error("Error in simulation:", error);
+        }
     }
 
-    simulateSpatialProcess(); // Run initially
+    simulateSpatialProcess();
 });
+
+
