@@ -64,34 +64,62 @@ document.addEventListener("DOMContentLoaded", function () {
         const x = Array.from({ length: nPointsX }, (_, i) => i);
         const y = Array.from({ length: nPointsY }, (_, i) => i);
         const locations = x.flatMap(xi => y.map(yi => [xi, yi]));
-
+    
         const rangeCat = parseFloat(rangeSlider.value);
         const varianceCat = parseFloat(varianceSlider.value);
         const k = parseInt(categoriesSlider.value, 10);
-
+    
         console.log("Simulating with range:", rangeCat, "variance:", varianceCat, "categories:", k);
-
+    
         const covCat = gaussianKernel(locations, rangeCat, varianceCat);
-
+    
         try {
             const gpSamplesCat = Array.from({ length: k }, () => multivariateNormal(new Array(locations.length).fill(0), covCat));
             const gpStacked = gpSamplesCat[0].map((_, i) => gpSamplesCat.map(row => row[i]));
             const categories = gpStacked.map(row => row.indexOf(Math.max(...row)));
-
+    
+            //Define a discrete color scale
+            const discreteColorscale = [
+                [0.0, 'rgb(255, 0, 0)'],    
+                [0.5, 'rgb(0, 255, 0)'],    
+                [1.0, 'rgb(0, 0, 255)']    
+            ];
+    
+            //If there are more than 3 categories, extend the color scale
+            if (k > 3) {
+                const additionalColors = [
+                    'rgb(255, 255, 0)', // Yellow
+                    'rgb(255, 0, 255)', // Magenta
+                    'rgb(0, 255, 255)', // Cyan
+                    'rgb(128, 0, 0)',  // Maroon
+                    'rgb(0, 128, 0)',   // Green (dark)
+                    'rgb(0, 0, 128)',   // Navy
+                    'rgb(128, 128, 0)', // Olive
+                    'rgb(128, 0, 128)',  // Purple
+                    'rgb(0, 128, 128)',  // Teal
+                    'rgb(192, 192, 192)' // Silver
+                ];
+                for (let i = 3; i < k; i++) {
+                    discreteColorscale.push([i / (k - 1), additionalColors[i % additionalColors.length]]);
+                }
+            }
+    
             const trace = {
                 x: locations.map(loc => loc[0]),
                 y: locations.map(loc => loc[1]),
                 z: categories,
                 type: 'heatmap',
-                colorscale: 'Viridis'
+                colorscale: discreteColorscale,
+                zmin: 0, //Ensure the minimum value maps to the first color
+                zmax: k - 1 //Ensure the maximum value maps to the last color
             };
-
+    
             const layout = {
                 title: 'Categorical Process Simulation',
                 xaxis: { title: 'X' },
                 yaxis: { title: 'Y' }
             };
-
+    
             setTimeout(() => {
                 Plotly.newPlot('plot', [trace], layout);
             }, 100);

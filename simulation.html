@@ -8,11 +8,24 @@
     <link rel="stylesheet" href="simulation.css">
 </head>
 <body>
+    <header class="header">
+        <div class="container">
+            <h1>Michael Spehlmann</h1>
+            <nav>
+                <ul class="nav-list">
+                    <li><a href="experience.html">Experience</a></li>
+                    <li><a href="geostats.html">Geostats</a></li>
+                    <li><a href="index.html">About Me</a></li>
+                    <li><a href="simulation.html">Simulations</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
     <div class="container">
         <h1>Interactive Spatial Process Simulation</h1>
         <div class="controls">
             <label for="range">Range: <span id="rangeValue">2</span></label>
-            <input type="range" id="range" min="0.5" max="5" step="0.1" value="2">
+            <input type="range" id="range" min="0.5" max="2" step="0.1" value="2">
 
             <label for="variance">Variance: <span id="varianceValue">1</span></label>
             <input type="range" id="variance" min="0.1" max="5" step="0.1" value="1">
