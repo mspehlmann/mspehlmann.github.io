@@ -1,59 +1,92 @@
-class GaussianProcess {
-  constructor(gridSize, sigma) {
-      this.gridSize = gridSize;
-      this.sigma = sigma;
-      this.grid = this.createGrid(gridSize);
-  }
+document.addEventListener("DOMContentLoaded", function () {
+    const rangeSlider = document.getElementById("range");
+    const varianceSlider = document.getElementById("variance");
+    const categoriesSlider = document.getElementById("categories");
 
-  createGrid(size) {
-      let grid = new Array(size).fill(0).map(() => new Array(size).fill(0));
-      return grid;
-  }
+    const rangeValue = document.getElementById("rangeValue");
+    const varianceValue = document.getElementById("varianceValue");
+    const categoriesValue = document.getElementById("categoriesValue");
 
-  applyGaussianKernel(x, y) {
-      let total = 0;
-      for (let i = 0; i < this.gridSize; i++) {
-          for (let j = 0; j < this.gridSize; j++) {
-              let distanceSq = (i - x) ** 2 + (j - y) ** 2;
-              this.grid[i][j] += Math.exp(-distanceSq / (2 * this.sigma ** 2));
-              total += this.grid[i][j];
-          }
-      }
-      return total;
-  }
+    rangeSlider.addEventListener("input", () => rangeValue.textContent = rangeSlider.value);
+    varianceSlider.addEventListener("input", () => varianceValue.textContent = varianceSlider.value);
+    categoriesSlider.addEventListener("input", () => categoriesValue.textContent = categoriesSlider.value);
 
-  normalizeGrid() {
-      let maxVal = Math.max(...this.grid.flat());
-      for (let i = 0; i < this.gridSize; i++) {
-          for (let j = 0; j < this.gridSize; j++) {
-              this.grid[i][j] /= maxVal;
-          }
-      }
-  }
+    document.getElementById("simulate").addEventListener("click", simulateSpatialProcess);
 
-  render(canvasId) {
-      let canvas = document.getElementById(canvasId);
-      let ctx = canvas.getContext("2d");
-      let imgData = ctx.createImageData(this.gridSize, this.gridSize);
-      for (let i = 0; i < this.gridSize; i++) {
-          for (let j = 0; j < this.gridSize; j++) {
-              let value = Math.floor(this.grid[i][j] * 255);
-              let index = (i * this.gridSize + j) * 4;
-              imgData.data[index] = value;
-              imgData.data[index + 1] = value;
-              imgData.data[index + 2] = 255;
-              imgData.data[index + 3] = 255;
-          }
-      }
-      ctx.putImageData(imgData, 0, 0);
-  }
-}
+    function gaussianKernel(locations, range = 1.0, variance = 1.0) {
+        const n = locations.length;
+        const kernel = Array.from({ length: n }, () => Array(n).fill(0));
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
+                const dx = locations[i][0] - locations[j][0];
+                const dy = locations[i][1] - locations[j][1];
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                kernel[i][j] = variance * Math.exp(-0.5 * Math.pow(distance / range, 2));
+            }
+        }
+        return kernel;
+    }
 
-function runGaussianProcess() {
-  let gridSize = parseInt(document.getElementById("gridSize").value);
-  let sigma = parseFloat(document.getElementById("sigma").value);
-  let gp = new GaussianProcess(gridSize, sigma);
-  gp.applyGaussianKernel(Math.floor(gridSize / 2), Math.floor(gridSize / 2));
-  gp.normalizeGrid();
-  gp.render("canvas");
-}
+    function choleskyDecomposition(matrix) {
+        const n = matrix.length;
+        const L = Array.from({ length: n }, () => Array(n).fill(0));
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j <= i; j++) {
+                let sum = 0;
+                for (let k = 0; k < j; k++) {
+                    sum += L[i][k] * L[j][k];
+                }
+                L[i][j] = i === j ? Math.sqrt(matrix[i][i] - sum) : (matrix[i][j] - sum) / L[j][j];
+            }
+        }
+        return L;
+    }
+
+    function randn() {
+        let u = Math.random(), v = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    function multivariateNormal(mean, cov, size) {
+        const n = mean.length;
+        const chol = choleskyDecomposition(cov);
+        return Array.from({ length: size }, () => {
+            const z = Array.from({ length: n }, randn);
+            return chol.map(row => row.reduce((sum, val, j) => sum + val * z[j], 0));
+        });
+    }
+
+    function simulateSpatialProcess() {
+        const nPointsX = 50, nPointsY = 50;
+        const x = Array.from({ length: nPointsX }, (_, i) => 10 * i / (nPointsX - 1));
+        const y = Array.from({ length: nPointsY }, (_, i) => 10 * i / (nPointsY - 1));
+        const locations = x.flatMap(xi => y.map(yi => [xi, yi]));
+
+        const rangeCat = parseFloat(rangeSlider.value);
+        const varianceCat = parseFloat(varianceSlider.value);
+        const k = parseInt(categoriesSlider.value, 10);
+
+        const covCat = gaussianKernel(locations, rangeCat, varianceCat);
+        const gpSamplesCat = multivariateNormal(new Array(locations.length).fill(0), covCat, k);
+        const gpStacked = gpSamplesCat[0].map((_, i) => gpSamplesCat.map(row => row[i]));
+        const categories = gpStacked.map(row => row.indexOf(Math.max(...row)));
+
+        const trace = {
+            x: locations.map(loc => loc[0]),
+            y: locations.map(loc => loc[1]),
+            z: categories,
+            type: 'heatmap',
+            colorscale: 'Viridis'
+        };
+
+        const layout = {
+            title: 'Categorical Process',
+            xaxis: { title: 'X' },
+            yaxis: { title: 'Y' }
+        };
+
+        Plotly.newPlot('plot', [trace], layout);
+    }
+
+    simulateSpatialProcess(); // Run initially
+});

@@ -1,7 +1,7 @@
 .header {
-    background-color: #333;
-    color: white;
-    padding: 10px 0;
+    background-color: #2fc5f0;
+    color: #b97b42;
+    padding: 20px 0;
 }
 
 .container {
@@ -14,23 +14,68 @@
 }
 
 .nav-list {
-    list-style: none;
     display: flex;
-    gap: 15px;
-    padding: 0;
+    justify-content: center;
+    list-style: none;
+    padding: 10px 0;
 }
 
 .nav-list li {
-    display: inline;
+    margin: 0 15px;
 }
 
 .nav-list a {
+    color: antiquewhite;
     text-decoration: none;
-    color: white;
     font-weight: bold;
 }
 
 .nav-list a:hover {
-    text-decoration: underline;
+    text-decoration: wavy;
 }
 
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1 {
+    color: #333;
+}
+
+.controls {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+input[type="range"] {
+    width: 80%;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#plot {
+    width: 100%;
+    height: 600px;
+}
