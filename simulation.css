@@ -62,7 +62,18 @@ h1 {
 }
 
 .controls {
+    display: flex; /* Use flexbox to align items horizontally */
+    align-items: center; /* Vertically center the button with the sliders */
+    gap: 20px; /* Add some spacing between the sliders and the button */
     margin-bottom: 20px;
+}
+
+.controls .sliders {
+    flex: 1; /* Allow the sliders to take up remaining space */
+}
+
+.controls button {
+    margin: 0; /* Remove any default margin */
 }
 
 label {
@@ -85,6 +96,7 @@ button {
     font-size: 16px;
     border-radius: 5px;
     transition: background-color 0.3s ease;
+    display: block;
 }
 
 button:hover {

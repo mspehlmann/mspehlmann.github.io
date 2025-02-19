@@ -26,15 +26,16 @@
         <div class="main-container">
             <h1>Interactive Spatial Process Simulation</h1>
             <div class="controls">
-                <label for="range">Range: <span id="rangeValue">2</span></label>
-                <input type="range" id="range" min="0.5" max="2" step="0.1" value="2">
+                <div class="sliders">
+                    <label for="range">Range: <span id="rangeValue">2</span></label>
+                    <input type="range" id="range" min="0.5" max="2" step="0.1" value="2">
 
-                <label for="variance">Variance: <span id="varianceValue">1</span></label>
-                <input type="range" id="variance" min="0.1" max="5" step="0.1" value="1">
+                    <label for="variance">Variance: <span id="varianceValue">1</span></label>
+                    <input type="range" id="variance" min="0.1" max="5" step="0.1" value="1">
 
-                <label for="categories">Number of Categories: <span id="categoriesValue">3</span></label>
-                <input type="range" id="categories" min="2" max="5" step="1" value="3">
-
+                    <label for="categories">Number of Categories: <span id="categoriesValue">3</span></label>
+                    <input type="range" id="categories" min="2" max="5" step="1" value="3">
+                </div>
                 <button id="simulate">Run Simulation</button>
             </div>
 
