@@ -21,9 +21,10 @@
             </nav>
         </div>
     </header>
-    <div class="container">
+
+    <main class="main-container">
         <h1>Interactive Spatial Process Simulation</h1>
-        <div class="controls">
+        <section class="controls">
             <label for="range">Range: <span id="rangeValue">2</span></label>
             <input type="range" id="range" min="0.5" max="2" step="0.1" value="2">
 
@@ -34,10 +35,24 @@
             <input type="range" id="categories" min="2" max="5" step="1" value="3">
 
             <button id="simulate">Run Simulation</button>
-        </div>
+        </section>
 
         <div id="plot"></div>
-    </div>
+    </main>
+
+    <section class="main-container">
+        <h2>Spatial Simulation</h2>
+        <p>This is an adaption of a conditional spatial simulation that I originally wrote in Python and 
+            adpated somewhat faithfully to JavaScript.  The simualtion uses a Guassian process convolution to simulate a 
+            categorical spatial process.  This is a component of a larger project that studies the capabilites 
+            of process convolutions to estimate a continuous response conditioned on a categorical process.
+            I am particularity interested in applying this methodology to scenarios that break the stationarity
+            assumption in Kriging.  Right now this work shows promise in allowing faster model fitting in larger
+            spatial domains without the need for careful sub domaining to meet the staionarity assumption.
+            Please reach out to me if you are interested in this work.  The current repository is located here 
+            <a href="https://github.com/mspehlmann/spatial-simulation">Conditioned Simulation</a>
+        </p>
+    </section>
 
     <script src="simulator.js"></script>
 </body>
