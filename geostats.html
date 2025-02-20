@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="geostats.css" type="text/css">
     <title>Michael Spehlmann</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 
 <body>
@@ -24,81 +26,78 @@
 
     <main class="main">
         <section id="geostats" class="section">
-            
             <div class="container">
                 <h2>Spatial Process Convolutions</h2>
-                <div class="work-content">
-                    <figure>
-                        <img src="oneDProcessConvo.png" alt="1d process convolution" class="work-img">
-                        <figcaption>The 1D fit of the spatial process convolution model.</figcaption>
-                    </figure>
-                    <p>Under the instruction of my advisor, I am currently working on using process
-                        convolutions to model a spatial trend. The kernel weights, &lambda; and &mu;, can be 
-                        found from the model statement below. The 1D fit of this convolution is shown above,
-                        using the model statement to parameterize the process convolution. I am currently 
-                        working on adapting this model to fit in two dimensions.
-                    </p>
-                    <h3>JAGS Model Statement</h3>
-                    <pre><code>
-            mod_str = "model {
-            
-                # Likelihood
-                for (i in 1:N) {
-                    sum_K_W[i] = sum(K[i, 1:M] * W[1:M])
-                    Y[i] ~ dnorm(mu + sum_K_W[i], tau_eps)
-                }
-                
-                # Priors
-                mu ~ dnorm(0, 0.001)
-                tau_eps ~ dgamma(0.01, 0.01)
-                tau_w ~ dgamma(0.01, 0.01)
-                lambda ~ dunif(0, 10)
-                
-                # Calculations
-                sigma_w = 1 / sqrt(tau_w)
-                sigma_eps = 1 / sqrt(tau_eps)
-                
-                # Weights
-                for (j in 1:M) {
-                    W[j] ~ dnorm(0, tau_w)
-                }
-                
-                # Kernel matrix
-                for (i in 1:N) {
-                    for (j in 1:M) {
-                        K[i, j] = exp(-0.5 * ((s[i] - u[j]) / lambda)**2)
-                    }
-                }
-            }"
-                    </code></pre>
-                </div>
-            </div>
 
-            <div class="container">
-                <h2>Mapping</h2>
                 <div class="work-content">
-                    <img src="d1Process.png" alt="1D process" class="work-img">
-                    <p>Machine learning algorithms, in conjunction with remote sensing, are increasingly being used to generate geological maps.
-                        Often, these are choropleth maps which out of necessity take on an unnatural, jagged polygonal appearance. I am curious about how 
-                        to adapt process convolutions for implicit domaining applications which now largely rely on RBFs. This involves 
-                        determining an appropriate threshold to separate positive and negative classes. For example, in the one-dimensional example above, 
-                        how would an optimal cutoff for postive an negative classes be determined?  How could a process convolution be used for multicategory 
-                        predictions? These are some of the questions I am currently exploring.
+                    <p>I am currently working on using process convolutions to model a continuous spatial process that is 
+                        assumed conditional to a categorical process. The model is an application of a process convolution model.
+                        Given below are the weights the Bayesian model that is used to fit the weights. </p>
                     </p>
-                </div>
-            </div>
+                    <p>With proper kernel and range parameter choices this class of models can fit continuous process assumed 
+                        conditional to a categorical process without requiring that spatial domain be divided into regions that meet
+                        the assumptions of regression based models such as Kriging.</p>
+                    </p>
 
-            <div class="container">
-                <h2>Uncertainty Estimation</h2>
-                <div class="work-content">
-                    <img src="oks_plot.png" alt="kriging rasters" class="work-img">
-                    <p>As any mining engineer knows, resource estimates can vary significantly between geologists.
-                        With the advent of implicit domain modeling, many different domains can be estimated. Kriging variance 
-                        can be used to compare the uncertainty of these estimates. In my spatial statistics course, I became interested in
-                        examining how kriging variance is affected by domaining. I explored how different domains influence resource 
-                        estimations and the associated uncertainties. This work highlighted some limitations of relying too heavily on implicit techniques. 
-                        Often, explicit domains yield better kriging estimates with lower kriging variances.
-                    </p>
+                    <h3>Model Statement</h3>
+                    <h4>Likelihood</h4>
+                    <p>The likelihood function for a continuous response \(Y_i\) at location \(s_i\), if \(s_i \in R_k\), where \(k\) is a unique region in the spatial domain, is given as:</p>
+                    <p>\[
+                        Y_{k_i} \sim N(\mu_k + Z_{k}(s_i), \tau^{-1}_{\epsilon_k}), \hspace{2cm} i = 1, \dots , n 
+                    \]</p>
+                    <p>Where:</p>
+                    <ul class="no-bullets">
+                        <li>\( y_i \): The observed data point for the \(i^{th}\) observation.</li>
+                        <li>\( \mu_k \): An unknown category-specific mean \(k = 1,2, \dots K\).</li>
+                        <li>\( \tau_{\epsilon_k} \): The precision of the error term (\(\tau_{\epsilon_k} = \frac{1}{\sigma^2_{\epsilon_k}}\)).</li>
+                        <li>\( Z_k(s_i) \): The value of the continuous process at \(s_i\) which corresponds to the continuous spatial process convolution for that region when \(s_i\) is in region \(k\). See section 3 for calculations.</li>
+                    </ul>
+
+                    <h4>Priors</h4>
+                    <ul class="no-bullets">
+                        <li>\(\mu_{k=1} \sim \text{normal}(0, \tau_{\mu_{k=1}}^{-1})\)</li>
+                        <li>For \(k = 2, \dots, K\):
+                            <div class="indented">
+                                <ul class="no-bullets">
+                                    <li>\(\delta_k \sim \text{exp}(1)\),</li>
+                                    <li><p><br></p></li>
+                                    <li>So that \(\mu_k = \mu_{k-1} + \delta_k\) for \(k =2,3, \dots,  K\).</li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><p><br></p></li>
+                        <li>\( w_j \overset{\text{iid}}{\sim} (0, \tau_{w_k}^{-1})\) for \(j = 1, \dots, M\).</li>
+                        <li><p><br></p></li>
+                        <li>For \(k= 2, \dots, K\):
+                            <div class = "indented">
+                                <ul class="no-bullets">
+                                    <li>\(\hspace{2cm} \tau_{\epsilon_2} \sim \text{gamma}(0.01, 0.01)\)</li>
+                                    <li>\(\hspace{2cm}\vdots\)</li>
+                                    <li>\( \hspace{2cm} \tau_{\epsilon_k} \sim \text{gamma}(0.01, 0.01) \)</li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>Note: \(\mu_k, \quad \tau_k\) are independent</li>
+                        <li>ie: \( \tau_k\) has \(\mu = 1, \quad \sigma^2 = 1000\)</li>
+                    </ul>
+
+                    <h4>Hyper Priors</h4>
+                    <ul class="no-bullets">
+                        <li>\(\tau_w \overset{\mathrm{iid}}{\sim} \text{gamma}(0.001, 0.001)\)</li>
+                        <li>\(\tau_{\mu_k} \overset{iid}{\sim} \text{gamma}(0.001, 0.001)\)</li>
+                    </ul>
+
+                    <h3>Posterior</h3>
+                    <p>\[
+                        P(\boldsymbol{\mu}, \boldsymbol{Z}, \boldsymbol{W}, \boldsymbol{\tau}_{\epsilon}, \boldsymbol{\tau}_w, \boldsymbol{\tau}_\mu,\mid Y) \propto \\
+                        \underbrace{P(Y \mid \boldsymbol{\mu}, \boldsymbol{Z}, \boldsymbol{\tau}_{\epsilon})}_{\text{Likelihood}} \cdot
+                        \underbrace{P(\boldsymbol{\mu})}_{\text{Prior for } \boldsymbol{\mu}} \cdot
+                        \underbrace{P(\boldsymbol{Z} \mid \boldsymbol{W})}_{\text{Prior for } \boldsymbol{Z}} \cdot
+                        \underbrace{P(\boldsymbol{W} \mid \boldsymbol{\tau}_w)}_{\text{Prior for } \boldsymbol{W}} \\
+                        \cdot \underbrace{P(\boldsymbol{\tau}_{\epsilon})}_{\text{Prior for } \boldsymbol{\tau}_{\epsilon}} \cdot
+                        \underbrace{P(\boldsymbol{\tau}_w)}_{\text{Prior for } \boldsymbol{\tau}_w} \cdot
+                        \underbrace{P(\boldsymbol{\tau}_\mu)}_{\text{Prior for } \boldsymbol{\tau}_\mu}
+                    \]</p>
                 </div>
             </div>
         </section>
