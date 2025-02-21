@@ -1,4 +1,4 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -15,7 +15,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; 
+    justify-content: center;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
@@ -58,16 +58,17 @@ body {
 
 .main {
     background-color: antiquewhite;
-    min-height: 100vh;  
+    min-height: 100vh;
     padding: 40px 0;
 }
 
 .no-bullets {
-    list-style: none; 
+    list-style: none;
     padding-left: 0;
 }
+
 .no-bullets li {
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
     margin-left: 1.5em;
 }
 
@@ -81,23 +82,64 @@ h3, h4 {
 
 .section {
     margin-bottom: 2em;
-    text-align: center; /* Center-aligns the content */
+    text-align: center;
 }
 
 .work-content {
     display: flex;
-    flex-direction: column; /* Changes layout to vertical */
-    align-items: center; /* Centers the image and text */
+    flex-direction: column;
+    align-items: center;
     gap: 20px;
 }
 
-.work-img {
-    width: 300px; /* Adjust the width as needed */
-    height: 200px; /* Adjust the height as needed */
-    object-fit: contain; /* Ensures the entire image is shown within the container */
-    border-radius: 0; /* Keeps the rectangular shape */
-    object-position: center; /* Centers the image */
+footer {
+    background-color: #2fc5f0;
+    color: #b97b42;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: auto;
 }
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    .nav-list {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .nav-list li {
+        margin: 10px 0;
+    }
+
+    .work-content {
+        padding: 0 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.5em;
+    }
+
+    .nav-list a {
+        font-size: 0.9em;
+    }
+
+    .section h2 {
+        font-size: 1.2em;
+    }
+
+    .section h3, .section h4 {
+        font-size: 1em;
+    }
+
+    .section p, .section li {
+        font-size: 0.9em;
+    }
+}
+
 
 
 footer{
