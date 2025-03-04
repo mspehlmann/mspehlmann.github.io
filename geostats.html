@@ -31,13 +31,20 @@
 
                 <div class="work-content">
                     <p>I am currently working on using process convolutions to model a continuous spatial process that is 
-                        assumed conditional to a categorical process. Given below is the Bayesian model that is used to fit 
-                        the weights. With the weights it cursory to fit the process convolution for a particular category.
+                        assumed conditional to a categorical process. This is a fundemental assumption in almost any resource
+                        estimation problem and why any resource estimator relies on genetic and exploration models to sub domain the
+                        spatial domain. Given below is the Bayesian model that is used to fit the weights. With the weights it 
+                        becomes trivial to fit the process convolution for a particular category.
                     </p>
 
-                    <p>With well chosen kernel and range parameter this class of models can fit continuous process assumed 
+                    <p>With well chosen kernel and range parameters this class of models can fit a continuous process assumed 
                         conditional to a categorical process without requiring that spatial domain be divided into regions that meet
-                        the assumptions of regression based models such as Kriging.</p>
+                        the assumptions of regression based models such as Kriging.  Bayesian inference is a natural choice for
+                        estimating weights in a stochastic spatial process.  It may be the only choice?  The posterior for determining 
+                        the weights is included below and a JAGs model statement is available in the simulation repository.  
+                        Of note is that the categorical process is assumed known in the entire spatial domain.  This is a common assumption
+                        and is often handled with such categories as "miscellaneous, unknown, ect" by modelers, however, future work should 
+                        explore performance with a true error term added to the categorical process.</p>
                     </p>
 
                     <h3>Model Statement</h3>
