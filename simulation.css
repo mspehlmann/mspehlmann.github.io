@@ -1,6 +1,6 @@
 .header {
     background-color: #2fc5f0;
-    color: white;
+    color: #b97b42;
     padding: 20px 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -33,16 +33,13 @@
 }
 
 .nav-list a {
-    color: white;
+    color: antiquewhite;
     text-decoration: none;
     font-weight: bold;
-    padding: 10px 15px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
 }
 
 .nav-list a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    text-decoration: wavy;
 }
 
 .main-container {
