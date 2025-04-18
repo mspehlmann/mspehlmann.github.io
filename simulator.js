@@ -53,10 +53,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function multivariateNormal(mean, cov) {
         const n = mean.length;
         const L = choleskyDecomposition(cov);
-        return Array.from({ length: n }, (_, i) => {
-            const z = Array.from({ length: n }, randn);
-            return L[i].reduce((sum, val, j) => sum + val * z[j], 0);
-        });
+        const z = Array.from({ length: n }, randn); // Single random vector
+        return Array.from({ length: n }, (_, i) =>
+            mean[i] + L[i].reduce((sum, val, j) => sum + val * z[j], 0)
+        );
     }
 
     function simulateSpatialProcess() {
