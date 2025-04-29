@@ -28,10 +28,10 @@
             <div class="controls">
                 <div class="sliders">
                     <label for="range">Range: <span id="rangeValue">2</span></label>
-                    <input type="range" id="range" min="0.5" max="2" step="0.1" value="2">
+                    <input type="range" id="range" min="0.5" max="10" step="0.1" value="2">
 
                     <label for="variance">Variance: <span id="varianceValue">1</span></label>
-                    <input type="range" id="variance" min="0.1" max="5" step="0.1" value="1">
+                    <input type="range" id="variance" min="0.1" max="7" step="0.1" value="1">
 
                     <label for="categories">Number of Categories: <span id="categoriesValue">3</span></label>
                     <input type="range" id="categories" min="2" max="5" step="1" value="3">
@@ -46,13 +46,13 @@
             <h2>Spatial Simulation</h2>
             <p>This is an adaption of a conditional spatial simulation that I originally wrote in Python and 
                 adpated somewhat faithfully to JavaScript.  This categorical simulation is constructed using 
-                process convolutions to blend a latent spatial process with a Gaussian kernel function.  A
-                process convolutions is calculated for each category over the entire spatial
+                process convolutions to blend a latent spatial process with Gaussian kernel functions.  A
+                process convolution is calculated for each category over the entire spatial
                 domain.  At each knot location used in the process convolution calculations, the process with 
                 the highest value is selected.  This process is then used to classify the knot as that category.</p>
                 
                 <p>A similar workflow is used to simulate a continuous spatial process which is conditioned on 
-                    the categorical process. The repository for that project can be here:
+                    the categorical process. The repository for that project can be found here:
                 <a href="https://github.com/mspehlmann/spatial-simulation">Conditional Simulation</a>.  This is 
                 part of a larger project that investigates the effectiveness of Bayesian Process Convolution models
                 to model spatial processes in sparse data spatial domains.
