@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function multivariateNormal(mean, cov) {
         const n = mean.length;
         const L = choleskyDecomposition(cov);
-        const z = Array.from({ length: n }, randn); // Single random vector
+        const z = Array.from({ length: n }, randn);
         return Array.from({ length: n }, (_, i) =>
             mean[i] + L[i].reduce((sum, val, j) => sum + val * z[j], 0)
         );
@@ -61,35 +61,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function simulateSpatialProcess() {
         const nPointsX = 20, nPointsY = 20;
-        
-        // Normalize x and y coordinates to [0,1]
         const x = Array.from({ length: nPointsX }, (_, i) => i / (nPointsX - 1));
         const y = Array.from({ length: nPointsY }, (_, i) => i / (nPointsY - 1));
         const locations = x.flatMap(xi => y.map(yi => [xi, yi]));
-    
-        const rangeProp = parseFloat(rangeSlider.value);  // slider gives [0,1] fraction
+
+        const rangeProp = parseFloat(rangeSlider.value);
         const varianceCat = parseFloat(varianceSlider.value);
         const k = parseInt(categoriesSlider.value, 10);
-    
-        console.log("Simulating with range (fraction of domain):", rangeProp, "variance:", varianceCat, "categories:", k);
-    
-        // Calculate maximum possible distance in normalized grid
-        const maxDistance = Math.sqrt(1 ** 2 + 1 ** 2);  // diagonal in [0,1] square ≈ 1.41
+
+        const maxDistance = Math.sqrt(1 ** 2 + 1 ** 2);
         const scaledRange = rangeProp * maxDistance;
-    
+
         const covCat = gaussianKernel(locations, scaledRange, varianceCat);
-    
+
         try {
             const gpSamplesCat = Array.from({ length: k }, () => multivariateNormal(new Array(locations.length).fill(0), covCat));
             const gpStacked = gpSamplesCat[0].map((_, i) => gpSamplesCat.map(row => row[i]));
             const categories = gpStacked.map(row => row.indexOf(Math.max(...row)));
-    
+
             const discreteColorscale = [
                 [0.0, 'rgb(255, 0, 0)'],
                 [0.5, 'rgb(0, 255, 0)'],
                 [1.0, 'rgb(0, 0, 255)']
             ];
-    
+
             if (k > 3) {
                 const additionalColors = [
                     'rgb(255, 255, 0)', 'rgb(255, 0, 255)', 'rgb(0, 255, 255)',
@@ -101,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     discreteColorscale.push([i / (k - 1), additionalColors[i % additionalColors.length]]);
                 }
             }
-    
+
             const trace = {
                 x: locations.map(loc => loc[0]),
                 y: locations.map(loc => loc[1]),
@@ -111,13 +106,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 zmin: 0,
                 zmax: k - 1
             };
-    
+
             const layout = {
                 title: 'Categorical Process Simulation',
                 xaxis: { title: 'X' },
                 yaxis: { title: 'Y' }
             };
-    
+
             setTimeout(() => {
                 Plotly.newPlot('plot', [trace], layout);
             }, 100);
@@ -128,5 +123,3 @@ document.addEventListener("DOMContentLoaded", function () {
 
     simulateSpatialProcess();
 });
-
-
