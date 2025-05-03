@@ -61,43 +61,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function simulateSpatialProcess() {
         const nPointsX = 20, nPointsY = 20;
-        const x = Array.from({ length: nPointsX }, (_, i) => i);
-        const y = Array.from({ length: nPointsY }, (_, i) => i);
+        
+        // Normalize x and y coordinates to [0,1]
+        const x = Array.from({ length: nPointsX }, (_, i) => i / (nPointsX - 1));
+        const y = Array.from({ length: nPointsY }, (_, i) => i / (nPointsY - 1));
         const locations = x.flatMap(xi => y.map(yi => [xi, yi]));
     
-        const rangeCat = parseFloat(rangeSlider.value);
+        const rangeProp = parseFloat(rangeSlider.value);  // slider gives [0,1] fraction
         const varianceCat = parseFloat(varianceSlider.value);
         const k = parseInt(categoriesSlider.value, 10);
     
-        console.log("Simulating with range:", rangeCat, "variance:", varianceCat, "categories:", k);
+        console.log("Simulating with range (fraction of domain):", rangeProp, "variance:", varianceCat, "categories:", k);
     
-        const covCat = gaussianKernel(locations, rangeCat, varianceCat);
+        // Calculate maximum possible distance in normalized grid
+        const maxDistance = Math.sqrt(1 ** 2 + 1 ** 2);  // diagonal in [0,1] square ≈ 1.41
+        const scaledRange = rangeProp * maxDistance;
+    
+        const covCat = gaussianKernel(locations, scaledRange, varianceCat);
     
         try {
             const gpSamplesCat = Array.from({ length: k }, () => multivariateNormal(new Array(locations.length).fill(0), covCat));
             const gpStacked = gpSamplesCat[0].map((_, i) => gpSamplesCat.map(row => row[i]));
             const categories = gpStacked.map(row => row.indexOf(Math.max(...row)));
     
-            //Define a discrete color scale
             const discreteColorscale = [
-                [0.0, 'rgb(255, 0, 0)'],    
-                [0.5, 'rgb(0, 255, 0)'],    
-                [1.0, 'rgb(0, 0, 255)']    
+                [0.0, 'rgb(255, 0, 0)'],
+                [0.5, 'rgb(0, 255, 0)'],
+                [1.0, 'rgb(0, 0, 255)']
             ];
     
-            //If there are more than 3 categories, extend the color scale
             if (k > 3) {
                 const additionalColors = [
-                    'rgb(255, 255, 0)', // Yellow
-                    'rgb(255, 0, 255)', // Magenta
-                    'rgb(0, 255, 255)', // Cyan
-                    'rgb(128, 0, 0)',  // Maroon
-                    'rgb(0, 128, 0)',   // Green (dark)
-                    'rgb(0, 0, 128)',   // Navy
-                    'rgb(128, 128, 0)', // Olive
-                    'rgb(128, 0, 128)',  // Purple
-                    'rgb(0, 128, 128)',  // Teal
-                    'rgb(192, 192, 192)' // Silver
+                    'rgb(255, 255, 0)', 'rgb(255, 0, 255)', 'rgb(0, 255, 255)',
+                    'rgb(128, 0, 0)', 'rgb(0, 128, 0)', 'rgb(0, 0, 128)',
+                    'rgb(128, 128, 0)', 'rgb(128, 0, 128)', 'rgb(0, 128, 128)',
+                    'rgb(192, 192, 192)'
                 ];
                 for (let i = 3; i < k; i++) {
                     discreteColorscale.push([i / (k - 1), additionalColors[i % additionalColors.length]]);
@@ -110,8 +108,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 z: categories,
                 type: 'heatmap',
                 colorscale: discreteColorscale,
-                zmin: 0, //Ensure the minimum value maps to the first color
-                zmax: k - 1 //Ensure the maximum value maps to the last color
+                zmin: 0,
+                zmax: k - 1
             };
     
             const layout = {
