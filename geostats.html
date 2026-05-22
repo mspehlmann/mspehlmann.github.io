@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="geostats.css" type="text/css">
+    <link rel="stylesheet" href="css/geostats.css" type="text/css">
     <title>Michael Spehlmann</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,14 +31,14 @@
 
                 <div class="work-content">
                     <p>I am currently working on using process convolutions to model a continuous spatial process that is 
-                        assumed conditional to a categorical process. This is a fundemental assumption in almost any resource
-                        estimation problem and why any resource estimator relies on genetic and exploration models to sub domain the
+                        assumed conditional to a categorical process. This is a fundamental assumption in almost any resource
+                        estimation problem and why a resource estimator relies on genetic and exploration models to sub domain the
                         spatial domain. Given below is the Bayesian model that is used to fit the weights. With the weights it 
                         becomes trivial to fit the process convolution for a particular category.
                     </p>
 
                     <div class="figure-container">
-                        <img src="risk_reward.png" alt="Process Convolution Illustration" class="responsive-image">
+                        <img src="images/risk_reward.png" alt="Process Convolution Illustration" class="responsive-image">
                         <p class="figure-caption">Figure 1: Conceptual illustration of a process convolution 
                             conditioned on a categorical spatial process. The Bayesian approach lends itself 
                             well to exploration problems because we can make inference on each location 
@@ -48,7 +48,7 @@
                     </div>
 
                     <p>With well chosen kernel and range parameters this class of models can fit a continuous process assumed 
-                        conditional to a categorical process without requiring that spatial domain be divided into regions that meet
+                        conditional to a categorical process without requiring that a spatial domain be divided into regions that meet
                         the assumptions of regression based models such as Kriging.  Bayesian inference is a natural choice for
                         estimating weights in a stochastic spatial process.  It may be the only choice?  The posterior for determining 
                         the weights is included below and a JAGs model statement is available in the simulation repository.  
