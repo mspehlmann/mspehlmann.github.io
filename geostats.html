@@ -128,7 +128,7 @@
                         Using public domain geochemical data it predicts Cu in soil across the state of Alaska.  The model
                         is fit using a process convolution and given that it uses a Bayesian parameterization we have access to
                         the full posterior distribution of the model parameters.  This allows us to make statistical inference 
-                        about the response at each location.  For example, the top layer pred_map, shows the risk weighted score
+                        about the response at each location.  For example, the top layer pred_map_optimistic, shows the risk weighted score
                         for each location.  The score is calculated as the amount of exceedance from the posterior mean at each
                         location above a threshold value.  For this layer the threshold is set at the 60\(^{th}\) percentile of the 
                         observed data.<br><br>Often when we communicate targets or use them in larger hierarchial models we express
@@ -142,7 +142,7 @@
                         <li>Tier 3: \( P(\mu(i) \ge \boldsymbol{P}_{60}) = 0.4 \)</li>
                     </ul>
 
-                    <p>Another layer, cat_high_cut is similar although it uses a higher threshold.  The threshold is set
+                    <p>Another layer, pred_map is similar although it uses a higher threshold.  The threshold is set
                     for the 75\(^{th}\) percentile of the observed data.  This model is more pessimistic and we see that the Pebble
                     region is now mostly background but with one area classified as a Tier 3 asset.</p>
                 </div>
